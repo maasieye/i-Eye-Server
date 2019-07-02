@@ -4,8 +4,10 @@ package kr.seoulmaas.ieye.service.utill;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+@Component
 public class RestTemplateConfig {
 
     private static int TIME_OUT = 5000;
@@ -15,7 +17,7 @@ public class RestTemplateConfig {
     private RestTemplate restTemplate;
 
     //TODO 메소드 네이밍 변경
-    public void get() {
+    public RestTemplateConfig() {
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
         factory.setReadTimeout(TIME_OUT);
         factory.setConnectTimeout(TIME_OUT);
@@ -25,5 +27,9 @@ public class RestTemplateConfig {
                 .build();
         factory.setHttpClient(httpClient);
         restTemplate = new RestTemplate(factory);
+    }
+
+    public RestTemplate getRestTemplate() {
+        return restTemplate;
     }
 }
