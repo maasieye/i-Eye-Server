@@ -32,8 +32,6 @@ public class RestTemplateConfig {
                 .build();
         factory.setHttpClient(httpClient);
         restTemplate = new RestTemplate(factory);
-        restTemplate.getMessageConverters()
-                .add(new StringHttpMessageConverter(Charset.forName(UTF_8)));
     }
 
     public RestTemplate getRestTemplate() {

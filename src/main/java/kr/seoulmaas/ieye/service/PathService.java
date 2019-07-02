@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriUtils;
+
+import java.net.URI;
 
 @Service
 @RequiredArgsConstructor
@@ -21,13 +22,10 @@ public class PathService {
 
     public void getBusPath(BusStopReqDto busStopReqDto) {
         RestTemplate restTemplate = restTemplateConfig.getRestTemplate();
-        String url = busPathInfo.getBusPathUrl(busStopReqDto);
-
-        log.info("url : " + url);
+        URI url = busPathInfo.getBusPathUrl(busStopReqDto);
 
         String o = restTemplate.getForObject(url, String.class);
-
-
+        
         log.info(o);
     }
 
