@@ -1,17 +1,22 @@
 package kr.seoulmaas.ieye.service.dto.busStop;
 
-import kr.seoulmaas.ieye.service.dto.busStop.path.PathList;
-import lombok.Getter;
+import kr.seoulmaas.ieye.service.dto.busStop.body.BusItem;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+@XmlRootElement(name = "ServiceResult")
 public class BusStopResDto {
 
-    private String distance;
+    @XmlElementWrapper(name = "msgBody")
+    @XmlElement(name = "itemList")
+    private List<BusItem> itemList;
 
-    private String time;
-
-    private List<PathList> pathList;
+    public List<BusItem> getItemList() {
+        return new ArrayList<>(itemList);
+    }
 
 }

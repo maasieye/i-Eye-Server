@@ -2,7 +2,6 @@ package kr.seoulmaas.ieye.web;
 
 import kr.seoulmaas.ieye.service.PathService;
 import kr.seoulmaas.ieye.service.dto.busStop.BusStopReqDto;
-import kr.seoulmaas.ieye.service.dto.busStop.BusStopResDto;
 import kr.seoulmaas.ieye.service.dto.path.PathReqDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/path")
+@RequestMapping("/api/path")
 @Slf4j
 public class PathController {
 

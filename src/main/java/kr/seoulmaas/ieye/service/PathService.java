@@ -2,6 +2,7 @@ package kr.seoulmaas.ieye.service;
 
 import kr.seoulmaas.ieye.domain.repository.FavoriteRepository;
 import kr.seoulmaas.ieye.service.dto.busStop.BusStopReqDto;
+import kr.seoulmaas.ieye.service.dto.busStop.BusStopResDto;
 import kr.seoulmaas.ieye.service.utill.BusPathInfo;
 import kr.seoulmaas.ieye.service.utill.RestTemplateConfig;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,7 @@ public class PathService {
         RestTemplate restTemplate = restTemplateConfig.getRestTemplate();
         URI url = busPathInfo.getBusPathUrl(busStopReqDto);
 
-        String o = restTemplate.getForObject(url, String.class);
-        
-        log.info(o);
+        BusStopResDto response = restTemplate.getForObject(url, BusStopResDto.class);
     }
 
     public void saveFavorite() {
