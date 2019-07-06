@@ -12,13 +12,13 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class RestTemplateConfig {
 
-    private static int TIME_OUT = 50000;
-    private static int MAX_CONNECTION_POOL = 100;
-    private static int MAX_CONNECTION_PER = 5;
-
     private RestTemplate restTemplate;
 
     public RestTemplateConfig() {
+        final int TIME_OUT = 50000;
+        final int MAX_CONNECTION_POOL = 100;
+        final int MAX_CONNECTION_PER = 5;
+
         HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
         factory.setReadTimeout(TIME_OUT);
         factory.setConnectTimeout(TIME_OUT);

@@ -4,8 +4,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 /***
- * Resource URI	https://api2.sktelecom.com/tmap/routes/pedestrian?version={version}&callback={callback}
+ * Resource URI	https://api2.sktelecom.com/tmap/routes/pedestrian?version={version}
  * Protocol /HTTP Method	REST / Post Method
  * Version	1
  * Pre-Conditions	1) Request Header accept 의 값으로 다음의 값을 지원 합니다.
@@ -31,24 +33,30 @@ import lombok.NoArgsConstructor;
  *
  * startName	String	Y			                                출발지 명칭입니다.
  *                                                                  - UTF-8 기반 URL인코딩으로 처리 해야 합니다.
- * endName	String	Y			                                    목적지 명칭입니다.
+ * endName	String	    Y			                                목적지 명칭입니다.
  *                                                                  - UTF-8 기반 URL인코딩으로 처리 해야 합니다.
  *
  */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class WalkPathResDto {
+public class WalkPathReqDto {
 
+    @NotBlank
     private Long startX;
 
+    @NotBlank
     private Long startY;
 
+    @NotBlank
     private Long endX;
 
+    @NotBlank
     private Long endY;
 
+    @NotBlank
     private String startName;
 
+    @NotBlank
     private String endName;
 
 }
