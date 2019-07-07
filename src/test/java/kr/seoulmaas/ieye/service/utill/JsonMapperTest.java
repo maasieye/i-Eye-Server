@@ -1,21 +1,28 @@
 package kr.seoulmaas.ieye.service.utill;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.IOException;
+import static org.assertj.core.api.Assertions.assertThat;
 
+@TestPropertySource("classpath:openapi.properties")
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class JsonMapperTest {
 
-    private JsonMapper jsonMapper = new JsonMapper();
+    @Autowired
+    private JsonMapper jsonMapper;
 
     @Test
-    public void parseJsonObject() throws IOException {
+    public void parseJsonObject() {
         String json = "{ \"id\" : \"thisIsId\" , \"value\" : 1 }";
         TestObject testObject = jsonMapper.parseJsonObject(json, TestObject.class);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        TestObject object = objectMapper.readValue(json,TestObject.class);
-        System.out.println(testObject.toString());
+        assertThat(testObject.getId()).isEqualTo("thisIsId");
+        assertThat(testObject.getValue()).isEqualTo(1);
     }
 }

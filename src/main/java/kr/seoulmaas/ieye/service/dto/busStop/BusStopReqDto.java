@@ -1,6 +1,7 @@
 package kr.seoulmaas.ieye.service.dto.busStop;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,4 +22,13 @@ public class BusStopReqDto {
 
     @NotBlank
     private String endY;
+
+    @Builder
+    private BusStopReqDto(@NotBlank String startX, @NotBlank String startY, @NotBlank String endX, @NotBlank String endY) {
+        this.startX = startX;
+        this.startY = startY;
+        this.endX = endX;
+        this.endY = endY;
+    }
+
 }
