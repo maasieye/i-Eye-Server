@@ -12,7 +12,7 @@ import java.net.URI;
 @Slf4j
 public class PathInfo {
 
-    private static final String BUS_PATH_INFO_URL = "http://ws.bus.go.kr/api/rest/pathinfo/getPathInfoByBus?ServiceKey=%s&startX=%s&startY=%s&endX=%s&endY=%s";
+//    private static final String BUS_PATH_INFO_URL = "http://ws.bus.go.kr/api/rest/pathinfo/getPathInfoByBus?ServiceKey=%s&startX=%s&startY=%s&endX=%s&endY=%s";
 
     @Value("${seoul.transport.servicekey}")
     private String serviceKey;
