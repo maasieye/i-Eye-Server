@@ -15,6 +15,8 @@ import org.springframework.web.client.RestTemplate;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @TestPropertySource("classpath:openapi.properties")
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -32,11 +34,12 @@ public class PathServiceTest {
         Constructor<BusStopReqDto> constructor = BusStopReqDto.class.getDeclaredConstructor(String.class, String.class, String.class, String.class);
 
         constructor.setAccessible(true);
-        BusStopReqDto busStopReqDto = constructor.newInstance("127.08370508148472",
-                "37.52946809068537",
-                "127.09404734529575",
-                "37.50612432766213");
-
+        BusStopReqDto busStopReqDto = BusStopReqDto.testBuilder()
+                .startX("127.08370508148472")
+                .startY("37.52946809068537")
+                .endX("127.09404734529575")
+                .endY("37.50612432766213")
+                .build();
 
         //when
         RestTemplate restTemplate = restTemplateConfig.getRestTemplate();
@@ -44,6 +47,7 @@ public class PathServiceTest {
 
         //then
         BusStopResDto response = restTemplate.getForObject(url, BusStopResDto.class);
-        System.out.println(response.toString());
+        assertThat(response.getItemList()).isNotEmpty();
+//        System.out.println(response.toString());
     }
 }

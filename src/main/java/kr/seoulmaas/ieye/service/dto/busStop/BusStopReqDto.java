@@ -23,8 +23,8 @@ public class BusStopReqDto {
     @NotBlank
     private String endY;
 
-    @Builder
-    private BusStopReqDto(@NotBlank String startX, @NotBlank String startY, @NotBlank String endX, @NotBlank String endY) {
+    @Builder(builderMethodName = "testBuilder")
+    public BusStopReqDto(@NotBlank String startX, @NotBlank String startY, @NotBlank String endX, @NotBlank String endY) {
         this.startX = startX;
         this.startY = startY;
         this.endX = endX;

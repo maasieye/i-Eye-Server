@@ -36,6 +36,5 @@ public class PathInfo {
 //        String url = String.format(BUS_PATH_INFO_URL, serviceKey, reqDto.getStartX(), reqDto.getStartY(), reqDto.getEndX(), reqDto.getEndY());
 
         return URI.create(uriString);
-//        return uri;
     }
 }
