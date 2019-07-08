@@ -11,14 +11,15 @@ import java.util.List;
 public class WalkPathResDto {
 
     @Getter
-    class Geometry{
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    private class Geometry {
         private String type;
-        private String coordinates;
-
+        private Long[] coordinates;
     }
 
     @Getter
-    class Property{
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    private class Property {
         private String index;
         private String name;
         private String description;
@@ -33,10 +34,12 @@ public class WalkPathResDto {
         private String facilityName;
         private Long totalDistance;
         private Long totalTime;
+        private Long pointIndex;
     }
 
     @Getter
-    class Feature{
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    private class Feature {
         private String type;
         private List<Geometry> geometry;
         private List<Property> properties;
@@ -44,6 +47,5 @@ public class WalkPathResDto {
 
     private String type;
     private List<Feature> features;
-
 
 }
