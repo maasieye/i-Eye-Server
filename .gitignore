@@ -1,4 +1,4 @@
-*.properties
+*/openapi.properties
 
 HELP.md
 .gradle
