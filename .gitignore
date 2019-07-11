@@ -1,5 +1,7 @@
 */openapi.properties
 
+path.properties
+
 HELP.md
 .gradle
 build/
