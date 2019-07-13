@@ -1,6 +1,6 @@
 package kr.seoulmaas.ieye.service.utill;
 
-import kr.seoulmaas.ieye.service.dto.busStop.BusStopReqDto;
+import kr.seoulmaas.ieye.service.dto.path.PathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathReqDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +22,7 @@ public class PathInfo {
     @Value("${tmap.appkey}")
     private String appkey;
 
-    public URI getBusPathURI(BusStopReqDto reqDto) {
+    public URI getBusPathURI(PathReqDto reqDto) {
         final String hostUrl = "ws.bus.go.kr";
         final String pathUrl = "/api/rest/pathinfo/getPathInfoByBus";
 

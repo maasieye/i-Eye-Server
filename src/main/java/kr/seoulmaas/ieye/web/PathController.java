@@ -1,7 +1,6 @@
 package kr.seoulmaas.ieye.web;
 
 import kr.seoulmaas.ieye.service.PathService;
-import kr.seoulmaas.ieye.service.dto.busStop.BusStopReqDto;
 import kr.seoulmaas.ieye.service.dto.busStop.BusStopResDto;
 import kr.seoulmaas.ieye.service.dto.path.PathReqDto;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,7 @@ public class PathController {
     }
 
     @GetMapping("/bus")
-    public ResponseEntity<BusStopResDto> getBusPath(@RequestBody BusStopReqDto busStopReqDto) {
-        return ResponseEntity.ok(pathService.getBusPath(busStopReqDto));
+    public ResponseEntity<BusStopResDto> getBusPath(@RequestBody PathReqDto pathReqDto) {
+        return ResponseEntity.ok(pathService.getBusPath(pathReqDto));
     }
 }

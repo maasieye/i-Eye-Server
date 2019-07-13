@@ -1,6 +1,7 @@
 package kr.seoulmaas.ieye.service.dto.path;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,14 +12,23 @@ import javax.validation.constraints.NotBlank;
 public class PathReqDto {
 
     @NotBlank
-    private Long startX;
+    private String startX;
 
     @NotBlank
-    private Long startY;
+    private String startY;
 
     @NotBlank
-    private Long endX;
+    private String endX;
 
     @NotBlank
-    private Long endY;
+    private String endY;
+
+    @Builder(builderMethodName = "testBuilder")
+    public PathReqDto(@NotBlank String startX, @NotBlank String startY, @NotBlank String endX, @NotBlank String endY) {
+        this.startX = startX;
+        this.startY = startY;
+        this.endX = endX;
+        this.endY = endY;
+    }
+
 }
