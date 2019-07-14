@@ -1,6 +1,7 @@
 package kr.seoulmaas.ieye.service.dto.path;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -42,16 +43,16 @@ import javax.validation.constraints.NotBlank;
 public class WalkPathReqDto {
 
     @NotBlank
-    private Long startX;
+    private Double startX;
 
     @NotBlank
-    private Long startY;
+    private Double startY;
 
     @NotBlank
-    private Long endX;
+    private Double endX;
 
     @NotBlank
-    private Long endY;
+    private Double endY;
 
     @NotBlank
     private String startName;
@@ -59,4 +60,13 @@ public class WalkPathReqDto {
     @NotBlank
     private String endName;
 
+    @Builder(builderMethodName = "testBuilder")
+    private WalkPathReqDto(@NotBlank Double startX, @NotBlank Double startY, @NotBlank Double endX, @NotBlank Double endY, @NotBlank String startName, @NotBlank String endName) {
+        this.startX = startX;
+        this.startY = startY;
+        this.endX = endX;
+        this.endY = endY;
+        this.startName = startName;
+        this.endName = endName;
+    }
 }

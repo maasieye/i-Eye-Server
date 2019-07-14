@@ -1,17 +1,19 @@
 package kr.seoulmaas.ieye.service;
 
-import kr.seoulmaas.ieye.domain.repository.FavoriteRepository;
 import kr.seoulmaas.ieye.service.dto.busStop.BusStopResDto;
 import kr.seoulmaas.ieye.service.dto.busStop.body.BusItem;
 import kr.seoulmaas.ieye.service.dto.path.PathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathResDto;
-import kr.seoulmaas.ieye.service.utill.DistanceComparator;
 import kr.seoulmaas.ieye.service.utill.PathInfo;
 import kr.seoulmaas.ieye.service.utill.RestTemplateConfig;
+import kr.seoulmaas.ieye.service.utill.comparator.DistanceComparator;
+import kr.seoulmaas.ieye.service.utill.comparator.SizeComparator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,7 +24,6 @@ import java.net.URI;
 @Slf4j
 public class PathService {
 
-    private final FavoriteRepository favoriteRepository;
     private final RestTemplateConfig restTemplateConfig;
     private final PathInfo pathInfo;
 
@@ -33,11 +34,23 @@ public class PathService {
     public BusItem getPath(PathReqDto pathReqDto) {
 
         BusStopResDto busStopResDto = getBusPath(pathReqDto);
+        BusItem shortBusItem = getShortestDistanceItem(busStopResDto);
+
+        return shortBusItem;
+    }
+
+    public BusItem getShortestDistanceItem(BusStopResDto resDto) {
         DistanceComparator comparator = new DistanceComparator();
-        BusItem shortBusItem = busStopResDto.getItemList().stream()
+        return resDto.getItemList().stream()
                 .min(comparator)
                 .orElseThrow(() -> new RuntimeException("경로 없음"));
-        return shortBusItem;
+    }
+
+    public BusItem getFewSizeItem(BusStopResDto resDto) {
+        SizeComparator comparator = new SizeComparator();
+        return resDto.getItemList().stream()
+                .min(comparator)
+                .orElseThrow(() -> new RuntimeException("경로없음"));
     }
 
     public BusStopResDto getBusPath(PathReqDto pathReqDto) {
@@ -48,21 +61,15 @@ public class PathService {
     }
 
     public WalkPathResDto getWalkPath(WalkPathReqDto reqDto) {
-
-
-        return null;
-    }
-
-    public void saveFavorite(WalkPathReqDto reqDto) {
         RestTemplate restTemplate = restTemplateConfig.getRestTemplate();
         HttpHeaders headers = pathInfo.getTMapHeaders();
-        URI reqUri = pathInfo.getWalkPathURI(reqDto);
+        URI url = pathInfo.getWalkPathURI(reqDto);
 
+        HttpEntity httpEntity = new HttpEntity<>(reqDto, headers);
 
+        return restTemplate.exchange(url, HttpMethod.POST, httpEntity, WalkPathResDto.class)
+                .getBody();
     }
 
-    public void getFavorites() {
-
-    }
 
 }
