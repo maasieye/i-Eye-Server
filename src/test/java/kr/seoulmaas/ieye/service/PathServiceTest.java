@@ -79,7 +79,7 @@ public class PathServiceTest {
     @Test
     public void getWalkPathResDto() {
         //given
-        WalkPathReqDto testWalkPathReqDto = getTestWalkPathReqDto("127.08370508148472", "37.52946809068537", "%EC%B6%9C%EB%B0%9C", "127.08468121119274", "37.531925459337224", "%EB%8F%84%EC%B0%A9");
+        WalkPathReqDto testWalkPathReqDto = getTestWalkPathReqDto("127.08370508148472", "37.52946809068537", "출발지", "127.08468121119274", "37.531925459337224", "도착지");
 
         //when
         WalkPathResDto walkPathResDto = pathService.getWalkPath(testWalkPathReqDto);
@@ -89,7 +89,7 @@ public class PathServiceTest {
         System.out.println(gson.toJson(walkPathResDto));
         walkPathResDto.getFeatures().stream()
                 .map(Feature::getGeometry)
-                .forEach(Geometry::get);
+                .forEach(Geometry::getCoordinateInfo);
     }
 
     private PathReqDto getTestPathReqDto(String sX, String sY, String eX, String eY) throws Exception {

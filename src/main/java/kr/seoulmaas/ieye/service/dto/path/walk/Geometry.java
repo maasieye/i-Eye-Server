@@ -14,18 +14,22 @@ public class Geometry {
     private String type;
     private JsonNode coordinates;
 
-    public void get() {
-        System.out.println(this.coordinates.toString());
+    //TODO:라인 하나로 정보 쭉 찍어줄수 있게 Set 으로 Collection 하나 만들기
+
+    public void getCoordinateInfo() {
         if (Type.isPoint(type)) {
+            Point point = new Point(this.coordinates);
             System.out.println("Point================================");
-            System.out.println(this.coordinates.get(0).doubleValue());
-            System.out.println(this.coordinates.get(1).doubleValue());
-            System.out.println("================================Point");
+            System.out.println(point.toString());
+            System.out.println("================================Point\n");
         } else {
-            System.out.println("Line================================");
-            System.out.println(this.coordinates.get(0).toString());
-            System.out.println(this.coordinates.get(1).toString());
-            System.out.println("================================Line");
+            System.out.println("Line================================ size : " + this.coordinates.size());
+            for (JsonNode coordinate : this.coordinates) {
+                Point point = new Point(coordinate);
+                System.out.println(point);
+            }
+            System.out.println("================================Line\n");
         }
     }
+
 }
