@@ -11,6 +11,7 @@ import lombok.ToString;
 @ToString
 public class Point {
 
+    private Type type = Type.LINE;
     private Double x;
     private Double y;
 
@@ -18,4 +19,13 @@ public class Point {
         this.x = coordinate.get(0).doubleValue();
         this.y = coordinate.get(1).doubleValue();
     }
+
+    public Point(JsonNode coordinate, String type) {
+        if (Type.isPoint(type)) {
+            this.type = Type.POINT;
+        }
+        this.x = coordinate.get(0).doubleValue();
+        this.y = coordinate.get(1).doubleValue();
+    }
+
 }

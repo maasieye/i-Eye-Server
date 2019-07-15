@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
@@ -14,7 +17,19 @@ public class Geometry {
     private String type;
     private JsonNode coordinates;
 
-    //TODO:라인 하나로 정보 쭉 찍어줄수 있게 Set 으로 Collection 하나 만들기
+    public List<Point> getPoints() {
+        List<Point> points = new ArrayList<>();
+        if (Type.isPoint(this.type)) {
+            Point point = new Point(this.coordinates, this.type);
+            points.add(point);
+        } else {
+            for (JsonNode coordinate : this.coordinates) {
+                Point point = new Point(coordinate);
+                points.add(point);
+            }
+        }
+        return new ArrayList<>(points);
+    }
 
     public void getCoordinateInfo() {
         if (Type.isPoint(type)) {
