@@ -9,6 +9,7 @@ import kr.seoulmaas.ieye.service.dto.path.WalkPathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathResDto;
 import kr.seoulmaas.ieye.service.dto.path.walk.Feature;
 import kr.seoulmaas.ieye.service.dto.path.walk.Geometry;
+import kr.seoulmaas.ieye.service.dto.path.walk.Point;
 import kr.seoulmaas.ieye.service.utill.PathInfo;
 import kr.seoulmaas.ieye.service.utill.RestTemplateConfig;
 import org.junit.Test;
@@ -17,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,6 +40,18 @@ public class PathServiceTest {
             .create();
 
     @Test
+    public void getPath() throws Exception {
+        //given
+        PathReqDto pathReqDto = getTestPathReqDto("127.08370508148472", "37.52946809068537", "127.09404734529575", "37.50612432766213");
+
+        //when
+        List<Point> points = pathService.getPath(pathReqDto);
+
+        //then
+        System.out.println(gson.toJson(points));
+    }
+
+    @Test
     public void getBusPath() throws Exception {
         //given
         PathReqDto pathReqDto = getTestPathReqDto("127.08370508148472", "37.52946809068537", "127.09404734529575", "37.50612432766213");
@@ -55,7 +70,8 @@ public class PathServiceTest {
         PathReqDto pathReqDto = getTestPathReqDto("127.08370508148472", "37.52946809068537", "127.09404734529575", "37.50612432766213");
 
         //when
-        BusItem busItem = pathService.getPath(pathReqDto);
+        BusStopResDto busStopResDto = pathService.getBusPath(pathReqDto);
+        BusItem busItem = pathService.getShortestDistanceItem(busStopResDto);
 
         //then
         assertThat(busItem).isNotNull();
@@ -92,6 +108,20 @@ public class PathServiceTest {
                 .forEach(Geometry::getCoordinateInfo);
     }
 
+    @Test
+    public void getPoints() {
+        //given
+        WalkPathReqDto testWalkPathReqDto = getTestWalkPathReqDto("127.08370508148472", "37.52946809068537", "출발지", "127.08468121119274", "37.531925459337224", "도착지");
+
+        //when
+        WalkPathResDto walkPathResDto = pathService.getWalkPath(testWalkPathReqDto);
+        List<Point> points = pathService.getAllPoints(walkPathResDto);
+
+        //then
+        assertThat(points).isNotNull();
+        System.out.println(gson.toJson(points));
+    }
+
     private PathReqDto getTestPathReqDto(String sX, String sY, String eX, String eY) throws Exception {
         return PathReqDto.testBuilder()
                 .startX(sX)
@@ -102,7 +132,7 @@ public class PathServiceTest {
     }
 
     private WalkPathReqDto getTestWalkPathReqDto(String sX, String sY, String sName, String eX, String eY, String eName) {
-        return WalkPathReqDto.testBuilder()
+        return WalkPathReqDto.createBuilder()
                 .startX(Double.parseDouble(sX))
                 .startY(Double.parseDouble(sY))
                 .startName(sName)

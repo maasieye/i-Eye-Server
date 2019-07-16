@@ -26,4 +26,8 @@ public class BusItem {
         return new ArrayList<>(pathList);
     }
 
+    public int getSize() {
+        return this.pathList.size();
+    }
+
 }

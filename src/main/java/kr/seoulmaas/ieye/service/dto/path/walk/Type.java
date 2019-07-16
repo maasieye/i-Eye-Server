@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum Type {
     POINT("Point", 0),
-    LINE("LineString", 1);
+    LINE("LineString", 1),
+    BUS_STOP("BusStop", 2);
 
     private String typeMessage;
     private int typeValue;

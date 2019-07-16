@@ -14,6 +14,8 @@ public class Point {
     private Type type = Type.LINE;
     private Double x;
     private Double y;
+    private String busNumber = "none";
+    private String routeId = "none";
 
     public Point(JsonNode coordinate) {
         this.x = coordinate.get(0).doubleValue();
@@ -28,4 +30,9 @@ public class Point {
         this.y = coordinate.get(1).doubleValue();
     }
 
+    public Point(String x, String y, Type busStop) {
+        this.x = Double.parseDouble(x);
+        this.y = Double.parseDouble(y);
+        this.type = busStop;
+    }
 }

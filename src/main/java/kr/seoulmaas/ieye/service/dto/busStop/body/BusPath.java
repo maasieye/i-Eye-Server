@@ -1,5 +1,7 @@
 package kr.seoulmaas.ieye.service.dto.busStop.body;
 
+import kr.seoulmaas.ieye.service.dto.path.walk.Point;
+import kr.seoulmaas.ieye.service.dto.path.walk.Type;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,5 +45,29 @@ public class BusPath {
 
     @XmlElement(name = "ty")
     private String ty;
+
+    public Point getStart() {
+        return new Point(fx, fy, Type.BUS_STOP);
+    }
+
+    public Point getEnd() {
+        return new Point(tx, ty, Type.BUS_STOP);
+    }
+
+    public Double getDoubleFX() {
+        return Double.valueOf(this.fx);
+    }
+
+    public Double getDoubleFY() {
+        return Double.valueOf(this.fy);
+    }
+
+    public Double getDoubleTX() {
+        return Double.valueOf(this.tx);
+    }
+
+    public Double getDoubleTY() {
+        return Double.valueOf(this.ty);
+    }
 
 }

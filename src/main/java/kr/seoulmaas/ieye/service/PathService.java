@@ -5,6 +5,10 @@ import kr.seoulmaas.ieye.service.dto.busStop.body.BusItem;
 import kr.seoulmaas.ieye.service.dto.path.PathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathResDto;
+import kr.seoulmaas.ieye.service.dto.path.walk.Feature;
+import kr.seoulmaas.ieye.service.dto.path.walk.Geometry;
+import kr.seoulmaas.ieye.service.dto.path.walk.Point;
+import kr.seoulmaas.ieye.service.dto.path.walk.Type;
 import kr.seoulmaas.ieye.service.utill.PathInfo;
 import kr.seoulmaas.ieye.service.utill.RestTemplateConfig;
 import kr.seoulmaas.ieye.service.utill.comparator.DistanceComparator;
@@ -18,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,12 +37,101 @@ public class PathService {
     //현재 출발지기준으로/ A -> B 경로구하기
     //내린곳인 C 기준으로/ C->D구하기
 
-    public BusItem getPath(PathReqDto pathReqDto) {
-
+    public List<Point> getPath(PathReqDto pathReqDto) {
         BusStopResDto busStopResDto = getBusPath(pathReqDto);
-        BusItem shortBusItem = getShortestDistanceItem(busStopResDto);
+        BusItem fewSizeItem = getFewSizeItem(busStopResDto);
 
-        return shortBusItem;
+        WalkPathReqDto walkPathReqDto;
+        WalkPathResDto walkPathResDto;
+
+        //a
+        Double beginX = Double.valueOf(pathReqDto.getStartX());
+        Double beginY = Double.valueOf(pathReqDto.getStartY());
+        String beginName = "출발지";
+
+        Double firstX = fewSizeItem.getPathList().get(0).getDoubleFX();
+        Double firstY = fewSizeItem.getPathList().get(0).getDoubleFY();
+        String firstName = fewSizeItem.getPathList().get(0).getFName();
+
+
+        walkPathReqDto = WalkPathReqDto.createBuilder()
+                .startX(beginX)
+                .startY(beginY)
+                .startName(beginName)
+                .endX(firstX)
+                .endY(firstY)
+                .endName(firstName)
+                .build();
+        walkPathResDto = getWalkPath(walkPathReqDto);
+        List<Point> points = new ArrayList<>(getAllPoints(walkPathResDto));
+
+        //첫 버스 타고
+        points.add(new Point(firstX.toString(), firstY.toString(), Type.BUS_STOP));
+
+
+        int callSize = fewSizeItem.getSize() - 1;
+        for (int i = 0; i < callSize; i++) {
+            log.info("i : " + i);
+            Double startX = fewSizeItem.getPathList().get(i).getDoubleTX();
+            Double startY = fewSizeItem.getPathList().get(i).getDoubleTY();
+            String startName = fewSizeItem.getPathList().get(i).getTName();
+
+            Double endX = fewSizeItem.getPathList().get(i + 1).getDoubleFX();
+            Double endY = fewSizeItem.getPathList().get(i + 1).getDoubleFY();
+            String endName = fewSizeItem.getPathList().get(i + 1).getFName();
+
+            walkPathReqDto = WalkPathReqDto.createBuilder()
+                    .startX(startX)
+                    .startY(startY)
+                    .startName(startName)
+                    .endX(endX)
+                    .endY(endY)
+                    .endName(endName)
+                    .build();
+
+            //버스 내리고
+            points.add(new Point(startX.toString(), startY.toString(), Type.BUS_STOP));
+            if (walkPathReqDto.isNotMove()) {
+                //버스 내린곳에서 다시 타고
+                points.add(new Point(endX.toString(), endY.toString(), Type.BUS_STOP));
+                continue;
+            }
+
+            walkPathResDto = getWalkPath(walkPathReqDto);
+            //걷고
+            points.addAll(getAllPoints(walkPathResDto));
+            //버스 타고
+            points.add(new Point(endX.toString(), endX.toString(), Type.BUS_STOP));
+
+        }
+
+        Double beforeX = fewSizeItem.getPathList().get(callSize).getDoubleTX();
+        Double beforeY = fewSizeItem.getPathList().get(callSize).getDoubleTY();
+        String beforeName = fewSizeItem.getPathList().get(callSize).getTName();
+
+        //마지막 버스 내리고
+        points.add(new Point(beforeX.toString(), beforeY.toString(), Type.BUS_STOP));
+
+        //f
+        Double finalX = Double.valueOf(pathReqDto.getEndX());
+        Double finalY = Double.valueOf(pathReqDto.getEndY());
+        String finalName = "도착지";
+
+        walkPathReqDto = WalkPathReqDto.createBuilder()
+                .startX(beforeX)
+                .startY(beforeY)
+                .startName(beforeName)
+                .endX(finalX)
+                .endY(finalY)
+                .endName(finalName)
+                .build();
+
+
+        walkPathResDto = getWalkPath(walkPathReqDto);
+        points.addAll(getAllPoints(walkPathResDto));
+        //e-f 걷는 포인트 넣어주고
+
+        return points;
     }
 
     public BusItem getShortestDistanceItem(BusStopResDto resDto) {
@@ -69,6 +164,15 @@ public class PathService {
 
         return restTemplate.exchange(url, HttpMethod.POST, httpEntity, WalkPathResDto.class)
                 .getBody();
+    }
+
+    public List<Point> getAllPoints(WalkPathResDto resDto) {
+        List<Point> points = new ArrayList<>();
+        resDto.getFeatures().stream()
+                .map(Feature::getGeometry)
+                .map(Geometry::getPoints)
+                .forEach(points::addAll);
+        return points;
     }
 
 
