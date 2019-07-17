@@ -63,7 +63,6 @@ public class PathService {
 
         int callSize = fewSizeItem.getSize() - 1;
         for (int i = 0; i < callSize; i++) {
-            log.info("i : " + i);
             Double startX = fewSizeItem.getPathList().get(i).getDoubleTX();
             Double startY = fewSizeItem.getPathList().get(i).getDoubleTY();
             String startName = fewSizeItem.getPathList().get(i).getTName();

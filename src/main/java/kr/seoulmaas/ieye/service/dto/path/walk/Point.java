@@ -1,14 +1,17 @@
 package kr.seoulmaas.ieye.service.dto.path.walk;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.lang.Nullable;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Point {
 
     private Type type = Type.LINE;
@@ -16,6 +19,7 @@ public class Point {
     private Double y;
     private String turnType;
 
+    @Nullable
     private String fid;
     private String tid;
     private String busNumber;

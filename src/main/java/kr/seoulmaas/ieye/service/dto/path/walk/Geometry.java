@@ -20,7 +20,7 @@ public class Geometry {
     public List<Point> getPoints(int turnType) {
         List<Point> points = new ArrayList<>();
         if (Type.isPoint(this.type)) {
-            Point point = new Point(this.coordinates, this.type,turnType);
+            Point point = new Point(this.coordinates, this.type, turnType);
             points.add(point);
         } else {
             for (JsonNode coordinate : this.coordinates) {

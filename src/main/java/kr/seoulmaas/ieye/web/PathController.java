@@ -6,7 +6,7 @@ import kr.seoulmaas.ieye.service.dto.path.walk.Point;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +22,7 @@ public class PathController {
 
     private final PathService pathService;
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<List<Point>> getPath(@RequestBody @Valid PathReqDto pathReqDto) {
         List<Point> points = pathService.getPath(pathReqDto);
         return ResponseEntity.ok(points);
