@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -46,9 +47,10 @@ public class PathServiceTest {
 
         //when
         List<Point> points = pathService.getPath(pathReqDto);
+        ResponseEntity<List<Point>> responseEntity = ResponseEntity.ok(points);
 
         //then
-        System.out.println(gson.toJson(points));
+        System.out.println(gson.toJson(responseEntity));
     }
 
     @Test
@@ -61,6 +63,7 @@ public class PathServiceTest {
 
         //then
         assertThat(response.getItemList()).isNotNull();
+
         System.out.println(gson.toJson(response.getItemList()));
     }
 

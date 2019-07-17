@@ -5,10 +5,7 @@ import kr.seoulmaas.ieye.service.dto.busStop.body.BusItem;
 import kr.seoulmaas.ieye.service.dto.path.PathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathResDto;
-import kr.seoulmaas.ieye.service.dto.path.walk.Feature;
-import kr.seoulmaas.ieye.service.dto.path.walk.Geometry;
 import kr.seoulmaas.ieye.service.dto.path.walk.Point;
-import kr.seoulmaas.ieye.service.dto.path.walk.Type;
 import kr.seoulmaas.ieye.service.utill.PathInfo;
 import kr.seoulmaas.ieye.service.utill.RestTemplateConfig;
 import kr.seoulmaas.ieye.service.utill.comparator.DistanceComparator;
@@ -33,10 +30,6 @@ public class PathService {
     private final RestTemplateConfig restTemplateConfig;
     private final PathInfo pathInfo;
 
-    //목적지 입력 하면 / B -> C 구해짐
-    //현재 출발지기준으로/ A -> B 경로구하기
-    //내린곳인 C 기준으로/ C->D구하기
-
     public List<Point> getPath(PathReqDto pathReqDto) {
         BusStopResDto busStopResDto = getBusPath(pathReqDto);
         BusItem fewSizeItem = getFewSizeItem(busStopResDto);
@@ -44,7 +37,6 @@ public class PathService {
         WalkPathReqDto walkPathReqDto;
         WalkPathResDto walkPathResDto;
 
-        //a
         Double beginX = Double.valueOf(pathReqDto.getStartX());
         Double beginY = Double.valueOf(pathReqDto.getStartY());
         String beginName = "출발지";
@@ -52,7 +44,6 @@ public class PathService {
         Double firstX = fewSizeItem.getPathList().get(0).getDoubleFX();
         Double firstY = fewSizeItem.getPathList().get(0).getDoubleFY();
         String firstName = fewSizeItem.getPathList().get(0).getFName();
-
 
         walkPathReqDto = WalkPathReqDto.createBuilder()
                 .startX(beginX)
@@ -62,11 +53,12 @@ public class PathService {
                 .endY(firstY)
                 .endName(firstName)
                 .build();
+
         walkPathResDto = getWalkPath(walkPathReqDto);
         List<Point> points = new ArrayList<>(getAllPoints(walkPathResDto));
 
         //첫 버스 타고
-        points.add(new Point(firstX.toString(), firstY.toString(), Type.BUS_STOP));
+        points.add(fewSizeItem.getPathList().get(0).getStart());
 
 
         int callSize = fewSizeItem.getSize() - 1;
@@ -90,10 +82,10 @@ public class PathService {
                     .build();
 
             //버스 내리고
-            points.add(new Point(startX.toString(), startY.toString(), Type.BUS_STOP));
+            points.add(fewSizeItem.getPathList().get(i).getEnd());
             if (walkPathReqDto.isNotMove()) {
                 //버스 내린곳에서 다시 타고
-                points.add(new Point(endX.toString(), endY.toString(), Type.BUS_STOP));
+                points.add(fewSizeItem.getPathList().get(i + 1).getStart());
                 continue;
             }
 
@@ -101,7 +93,7 @@ public class PathService {
             //걷고
             points.addAll(getAllPoints(walkPathResDto));
             //버스 타고
-            points.add(new Point(endX.toString(), endX.toString(), Type.BUS_STOP));
+            points.add(fewSizeItem.getPathList().get(i + 1).getStart());
 
         }
 
@@ -110,9 +102,8 @@ public class PathService {
         String beforeName = fewSizeItem.getPathList().get(callSize).getTName();
 
         //마지막 버스 내리고
-        points.add(new Point(beforeX.toString(), beforeY.toString(), Type.BUS_STOP));
+        points.add(fewSizeItem.getPathList().get(callSize).getEnd());
 
-        //f
         Double finalX = Double.valueOf(pathReqDto.getEndX());
         Double finalY = Double.valueOf(pathReqDto.getEndY());
         String finalName = "도착지";
@@ -126,10 +117,8 @@ public class PathService {
                 .endName(finalName)
                 .build();
 
-
         walkPathResDto = getWalkPath(walkPathReqDto);
         points.addAll(getAllPoints(walkPathResDto));
-        //e-f 걷는 포인트 넣어주고
 
         return points;
     }
@@ -169,8 +158,7 @@ public class PathService {
     public List<Point> getAllPoints(WalkPathResDto resDto) {
         List<Point> points = new ArrayList<>();
         resDto.getFeatures().stream()
-                .map(Feature::getGeometry)
-                .map(Geometry::getPoints)
+                .map(feature -> feature.getGeometry().getPoints(feature.getProperties().getTurnType()))
                 .forEach(points::addAll);
         return points;
     }

@@ -6,7 +6,6 @@ spring:
 
 spring:
   profiles: prod
-
   datasource:
     driver-class-name: org.h2.Driver
     hikari:
@@ -24,7 +23,8 @@ spring:
     hibernate:
       dialect: org.hibernate.dialect.H2Dialect
       ddl-auto: create-drop
-
+server:
+  port: 8284
 ---
 
 spring:

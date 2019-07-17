@@ -47,11 +47,11 @@ public class BusPath {
     private String ty;
 
     public Point getStart() {
-        return new Point(fx, fy, Type.BUS_STOP);
+        return new Point(fx, fy, Type.BUS_STOP, routeNm, routeId, fId, null);
     }
 
     public Point getEnd() {
-        return new Point(tx, ty, Type.BUS_STOP);
+        return new Point(tx, ty, Type.BUS_STOP, routeNm, routeId, null, tId);
     }
 
     public Double getDoubleFX() {
