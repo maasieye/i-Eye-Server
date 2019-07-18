@@ -6,7 +6,7 @@ import kr.seoulmaas.ieye.service.dto.path.PathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathResDto;
 import kr.seoulmaas.ieye.service.dto.path.walk.Point;
-import kr.seoulmaas.ieye.service.utill.PathInfo;
+import kr.seoulmaas.ieye.service.utill.RestInfo;
 import kr.seoulmaas.ieye.service.utill.RestTemplateConfig;
 import kr.seoulmaas.ieye.service.utill.comparator.DistanceComparator;
 import kr.seoulmaas.ieye.service.utill.comparator.SizeComparator;
@@ -28,7 +28,7 @@ import java.util.List;
 public class PathService {
 
     private final RestTemplateConfig restTemplateConfig;
-    private final PathInfo pathInfo;
+    private final RestInfo restInfo;
 
     public List<Point> getPath(PathReqDto pathReqDto) {
         BusStopResDto busStopResDto = getBusPath(pathReqDto);
@@ -138,15 +138,15 @@ public class PathService {
 
     public BusStopResDto getBusPath(PathReqDto pathReqDto) {
         RestTemplate restTemplate = restTemplateConfig.getRestTemplate();
-        URI url = pathInfo.getBusPathURI(pathReqDto);
+        URI url = restInfo.getBusPathURI(pathReqDto);
 
         return restTemplate.getForObject(url, BusStopResDto.class);
     }
 
     public WalkPathResDto getWalkPath(WalkPathReqDto reqDto) {
         RestTemplate restTemplate = restTemplateConfig.getRestTemplate();
-        HttpHeaders headers = pathInfo.getTMapHeaders();
-        URI url = pathInfo.getWalkPathURI(reqDto);
+        HttpHeaders headers = restInfo.getTMapHeaders();
+        URI url = restInfo.getWalkPathURI(reqDto);
 
         HttpEntity httpEntity = new HttpEntity<>(reqDto, headers);
 

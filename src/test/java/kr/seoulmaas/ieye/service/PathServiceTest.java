@@ -10,7 +10,7 @@ import kr.seoulmaas.ieye.service.dto.path.WalkPathResDto;
 import kr.seoulmaas.ieye.service.dto.path.walk.Feature;
 import kr.seoulmaas.ieye.service.dto.path.walk.Geometry;
 import kr.seoulmaas.ieye.service.dto.path.walk.Point;
-import kr.seoulmaas.ieye.service.utill.PathInfo;
+import kr.seoulmaas.ieye.service.utill.RestInfo;
 import kr.seoulmaas.ieye.service.utill.RestTemplateConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +35,7 @@ public class PathServiceTest {
     private RestTemplateConfig restTemplateConfig;
 
     @Autowired
-    private PathInfo pathInfo;
+    private RestInfo restInfo;
 
     private Gson gson = new GsonBuilder().setPrettyPrinting()
             .create();

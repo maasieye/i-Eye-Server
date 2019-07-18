@@ -1,5 +1,6 @@
 package kr.seoulmaas.ieye.service.utill;
 
+import kr.seoulmaas.ieye.service.dto.bus.BusTimeReqDto;
 import kr.seoulmaas.ieye.service.dto.path.PathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathReqDto;
 import lombok.extern.slf4j.Slf4j;
@@ -12,15 +13,18 @@ import java.net.URI;
 
 @Component
 @Slf4j
-public class PathInfo {
+public class RestInfo {
 
 //    private static final String BUS_PATH_INFO_URL = "http://ws.bus.go.kr/api/rest/pathinfo/getPathInfoByBus?ServiceKey=%s&startX=%s&startY=%s&endX=%s&endY=%s";
 
     @Value("${seoul.transport.servicekey}")
     private String serviceKey;
 
-    @Value("${tmap.appkey}")
-    private String appkey;
+    @Value("${tmap.appKey}")
+    private String appKey;
+
+    @Value("${tmoney.appKey}")
+    private String tMoneyKey;
 
     public URI getBusPathURI(PathReqDto reqDto) {
         final String hostUrl = "ws.bus.go.kr";
@@ -57,10 +61,36 @@ public class PathInfo {
         return URI.create(uriString);
     }
 
+    public URI getBusTimeURI(BusTimeReqDto reqDto) {
+        final String hostUrl = "apigw.tmoney.co.kr:5556";
+        final String pathUrl = "/gateway/saArrInfoByRouteGet/v1/arrive/getArrInfoByRoute";
+
+        String uriString = UriComponentsBuilder.newInstance()
+                .scheme("https")
+                .host(hostUrl)
+                .path(pathUrl)
+                .queryParam("serviceKey", "01234567890")
+                .queryParam("stId", reqDto.getStId())
+                .queryParam("busRouteId", reqDto.getBusRouteId())
+                .queryParam("ord", "1")
+                .build()
+                .toString();
+
+        return URI.create(uriString);
+    }
+
+    public HttpHeaders getBusTimeHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Accept", "application/xml");
+        headers.add("Content-Type", "application/x-www-form-urlencoded");
+        headers.add("x-Gateway-APIKey", tMoneyKey);
+        return headers;
+    }
+
     public HttpHeaders getTMapHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
-        headers.add("appKey", appkey);
+        headers.add("appKey", appKey);
         headers.add("Accept-Language", "ko");
         return headers;
     }
