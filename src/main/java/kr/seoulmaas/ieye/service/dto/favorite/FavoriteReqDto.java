@@ -20,7 +20,6 @@ public class FavoriteReqDto {
         return Favorite.builder()
                 .mobileNumber(mobileNumber)
                 .name(name)
-                .stationId(stationId)
                 .x(x)
                 .y(y)
                 .build();
