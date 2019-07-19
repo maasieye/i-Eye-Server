@@ -6,14 +6,14 @@ import lombok.Getter;
 @Getter
 public class FavoriteResDto {
 
-    private String name;
+    private String stationName;
 
-    private Long x;
+    private Double x;
 
-    private Long y;
+    private Double y;
 
     public FavoriteResDto(Favorite favorite) {
-        this.name = favorite.getName();
+        this.stationName = favorite.getName();
         this.x = favorite.getX();
         this.y = favorite.getY();
     }
