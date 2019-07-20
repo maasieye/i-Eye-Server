@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BusTimeReqDto {
 
-    private String serviceKey;
-    private String stId;
+    private String stationId;
     private String busRouteId;
-    private String ord;
 
+    public BusTimeReqDto(String stationId, String busRouteId) {
+        this.stationId = stationId;
+        this.busRouteId = busRouteId;
+    }
 }

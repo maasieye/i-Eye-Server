@@ -1,11 +1,13 @@
 package kr.seoulmaas.ieye.service.utill;
 
 import kr.seoulmaas.ieye.service.dto.bus.BusTimeReqDto;
+import kr.seoulmaas.ieye.service.dto.busStop.BusStopGeometryReqDto;
 import kr.seoulmaas.ieye.service.dto.path.PathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathReqDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -15,10 +17,11 @@ import java.net.URI;
 @Slf4j
 public class RestInfo {
 
-//    private static final String BUS_PATH_INFO_URL = "http://ws.bus.go.kr/api/rest/pathinfo/getPathInfoByBus?ServiceKey=%s&startX=%s&startY=%s&endX=%s&endY=%s";
-
     @Value("${seoul.transport.servicekey}")
     private String serviceKey;
+
+    @Value("$(seoul.time.servicekey)")
+    private String timeKey;
 
     @Value("${tmap.appKey}")
     private String appKey;
@@ -42,8 +45,6 @@ public class RestInfo {
                 .build()
                 .toString();
 
-//        String url = String.format(BUS_PATH_INFO_URL, serviceKey, reqDto.getStartX(), reqDto.getStartY(), reqDto.getEndX(), reqDto.getEndY());
-
         return URI.create(uriString);
     }
 
@@ -61,29 +62,44 @@ public class RestInfo {
         return URI.create(uriString);
     }
 
-    public URI getBusTimeURI(BusTimeReqDto reqDto) {
-        final String hostUrl = "apigw.tmoney.co.kr:5556";
-        final String pathUrl = "/gateway/saArrInfoByRouteGet/v1/arrive/getArrInfoByRoute";
+    public URI getStationAsrIdURI(BusStopGeometryReqDto dto) {
+        final String hostUrl = "apigw.tmoney.co.kr:5556/gateway/saStationByPosGet/v1";
+        final String pathUrl = "/stationinfo/getStationByPos";
 
         String uriString = UriComponentsBuilder.newInstance()
                 .scheme("https")
                 .host(hostUrl)
                 .path(pathUrl)
                 .queryParam("serviceKey", "01234567890")
-                .queryParam("stId", reqDto.getStId())
-                .queryParam("busRouteId", reqDto.getBusRouteId())
-                .queryParam("ord", "1")
+                .queryParam("tmX", dto.getX())
+                .queryParam("tmY", dto.getY())
+                .queryParam("radius", "2")
+                .queryParam("busRouteType", "1")
                 .build()
                 .toString();
 
         return URI.create(uriString);
     }
 
-    public HttpHeaders getBusTimeHeaders() {
+    public URI getBusTimeURI(BusTimeReqDto reqDto) {
+        final String hostUrl = "ws.bus.go.kr/api/rest/arrive";
+        final String pathUrl = "/getArrInfoByRouteAll";
+
+        String uriString = UriComponentsBuilder.newInstance()
+                .scheme("http")
+                .host(hostUrl)
+                .path(pathUrl)
+                .queryParam("serviceKey", "ast3JkT7%2Fxg%2BNKFURzalhmBOG175x6IVJ%2BN4VvLpYqJX2xF2QrUFPLMiCLmW54nCo%2F%2FhEg0GzpfjmlTtBMf8vw%3D%3D")
+                .queryParam("busRouteId", reqDto.getBusRouteId())
+                .build()
+                .toString();
+
+        return URI.create(uriString);
+    }
+
+    public HttpHeaders getDefailtHeader() {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Accept", "application/xml");
-        headers.add("Content-Type", "application/x-www-form-urlencoded");
-        headers.add("x-Gateway-APIKey", tMoneyKey);
+        headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
     }
 
