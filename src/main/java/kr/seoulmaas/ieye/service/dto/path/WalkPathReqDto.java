@@ -41,16 +41,16 @@ import javax.validation.constraints.NotBlank;
 public class WalkPathReqDto {
 
     @NotBlank
-    private Double startX;
+    private String startX;
 
     @NotBlank
-    private Double startY;
+    private String  startY;
 
     @NotBlank
-    private Double endX;
+    private String endX;
 
     @NotBlank
-    private Double endY;
+    private String endY;
 
     @NotBlank
     private String startName;
@@ -59,7 +59,7 @@ public class WalkPathReqDto {
     private String endName;
 
     @Builder(builderMethodName = "createBuilder")
-    public WalkPathReqDto(@NotBlank Double startX, @NotBlank Double startY, @NotBlank Double endX, @NotBlank Double endY, @NotBlank String startName, @NotBlank String endName) {
+    public WalkPathReqDto(@NotBlank String startX, @NotBlank String startY, @NotBlank String endX, @NotBlank String endY, @NotBlank String startName, @NotBlank String endName) {
         this.startX = startX;
         this.startY = startY;
         this.endX = endX;

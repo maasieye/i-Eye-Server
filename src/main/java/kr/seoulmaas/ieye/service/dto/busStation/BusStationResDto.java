@@ -1,6 +1,6 @@
-package kr.seoulmaas.ieye.service.dto.busStop;
+package kr.seoulmaas.ieye.service.dto.busStation;
 
-import kr.seoulmaas.ieye.service.dto.busStop.body.BusItem;
+import kr.seoulmaas.ieye.service.dto.busStation.body.BusItem;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -13,7 +13,7 @@ import java.util.List;
 @XmlRootElement(name = "ServiceResult")
 @Getter
 @ToString
-public class BusStopResDto {
+public class BusStationResDto {
 
     @XmlElementWrapper(name = "msgBody")
     @XmlElement(name = "itemList")

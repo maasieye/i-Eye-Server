@@ -1,4 +1,4 @@
-package kr.seoulmaas.ieye.service.dto.busStop.body;
+package kr.seoulmaas.ieye.service.dto.busStation.body;
 
 import lombok.Getter;
 import lombok.ToString;

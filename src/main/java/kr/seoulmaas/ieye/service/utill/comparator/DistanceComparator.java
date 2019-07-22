@@ -1,6 +1,6 @@
 package kr.seoulmaas.ieye.service.utill.comparator;
 
-import kr.seoulmaas.ieye.service.dto.busStop.body.BusItem;
+import kr.seoulmaas.ieye.service.dto.busStation.body.BusItem;
 
 import java.util.Comparator;
 

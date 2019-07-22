@@ -1,7 +1,6 @@
 package kr.seoulmaas.ieye.service.utill;
 
 import kr.seoulmaas.ieye.service.dto.bus.BusTimeReqDto;
-import kr.seoulmaas.ieye.service.dto.busStop.BusStopGeometryReqDto;
 import kr.seoulmaas.ieye.service.dto.path.PathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathReqDto;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +18,6 @@ public class RestInfo {
 
     @Value("${seoul.transport.servicekey}")
     private String serviceKey;
-
-    @Value("$(seoul.time.servicekey)")
-    private String timeKey;
 
     @Value("${tmap.appKey}")
     private String appKey;
@@ -62,25 +58,6 @@ public class RestInfo {
         return URI.create(uriString);
     }
 
-    public URI getStationAsrIdURI(BusStopGeometryReqDto dto) {
-        final String hostUrl = "apigw.tmoney.co.kr:5556/gateway/saStationByPosGet/v1";
-        final String pathUrl = "/stationinfo/getStationByPos";
-
-        String uriString = UriComponentsBuilder.newInstance()
-                .scheme("https")
-                .host(hostUrl)
-                .path(pathUrl)
-                .queryParam("serviceKey", "01234567890")
-                .queryParam("tmX", dto.getX())
-                .queryParam("tmY", dto.getY())
-                .queryParam("radius", "2")
-                .queryParam("busRouteType", "1")
-                .build()
-                .toString();
-
-        return URI.create(uriString);
-    }
-
     public URI getBusTimeURI(BusTimeReqDto reqDto) {
         final String hostUrl = "ws.bus.go.kr/api/rest/arrive";
         final String pathUrl = "/getArrInfoByRouteAll";
@@ -97,7 +74,7 @@ public class RestInfo {
         return URI.create(uriString);
     }
 
-    public HttpHeaders getDefailtHeader() {
+    public HttpHeaders getDefaultHeader() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
@@ -109,5 +86,44 @@ public class RestInfo {
         headers.add("appKey", appKey);
         headers.add("Accept-Language", "ko");
         return headers;
+    }
+
+    /**
+     * @param busRouteId 노선 아이디
+     * @return 다음 정류소 아이디를 구하기 위한 URI
+     */
+    public URI getNextBusStationIdURI(String busRouteId) {
+        final String hostUrl = "ws.bus.go.kr/api/rest/buspos";
+        final String pathUrl = "/getBusPosByRtid";
+
+        String uriString = UriComponentsBuilder.newInstance()
+                .scheme("http")
+                .host(hostUrl)
+                .path(pathUrl)
+                .queryParam("serviceKey", "ast3JkT7%2Fxg%2BNKFURzalhmBOG175x6IVJ%2BN4VvLpYqJX2xF2QrUFPLMiCLmW54nCo%2F%2FhEg0GzpfjmlTtBMf8vw%3D%3D")
+                .queryParam("busRouteId", busRouteId)
+                .build()
+                .toString();
+
+        return URI.create(uriString);
+    }
+
+    /**
+     * @return 노선의 전체 정류장 아이디, 정류장 이름, 몇번째 인지 알려주는 URI
+     */
+    public URI getAllBusPathURI(String busRouteId) {
+        final String hostUrl = "ws.bus.go.kr/api/rest/busRouteInfo";
+        final String pathUrl = "/getStaionByRoute";
+
+        String uriString = UriComponentsBuilder.newInstance()
+                .scheme("http")
+                .host(hostUrl)
+                .path(pathUrl)
+                .queryParam("serviceKey", "ast3JkT7%2Fxg%2BNKFURzalhmBOG175x6IVJ%2BN4VvLpYqJX2xF2QrUFPLMiCLmW54nCo%2F%2FhEg0GzpfjmlTtBMf8vw%3D%3D")
+                .queryParam("busRouteId", busRouteId)
+                .build()
+                .toString();
+
+        return URI.create(uriString);
     }
 }

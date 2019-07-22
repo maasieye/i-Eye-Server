@@ -1,7 +1,8 @@
 package kr.seoulmaas.ieye.service;
 
-import kr.seoulmaas.ieye.service.dto.busStop.BusStopResDto;
-import kr.seoulmaas.ieye.service.dto.busStop.body.BusItem;
+import kr.seoulmaas.ieye.service.dto.busStation.BusStationResDto;
+import kr.seoulmaas.ieye.service.dto.busStation.body.BusItem;
+import kr.seoulmaas.ieye.service.dto.path.PathDetailResDto;
 import kr.seoulmaas.ieye.service.dto.path.PathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathResDto;
@@ -30,32 +31,15 @@ public class PathService {
     private final RestTemplateConfig restTemplateConfig;
     private final RestInfo restInfo;
 
-    public List<Point> getPath(PathReqDto pathReqDto) {
-        BusStopResDto busStopResDto = getBusPath(pathReqDto);
-        BusItem fewSizeItem = getFewSizeItem(busStopResDto);
+    //TODO 버스 경로 없이 걷는 경로만 나올때 에러 터지지않고 걷는 경로만 주도록
+    public PathDetailResDto getPath(PathReqDto pathReqDto) {
+        BusStationResDto busStationResDto = getBusPath(pathReqDto);
+        BusItem fewSizeItem = getFewSizeItem(busStationResDto);
 
         WalkPathReqDto walkPathReqDto;
         WalkPathResDto walkPathResDto;
 
-        Double beginX = Double.valueOf(pathReqDto.getStartX());
-        Double beginY = Double.valueOf(pathReqDto.getStartY());
-        String beginName = "출발지";
-
-        Double firstX = fewSizeItem.getPathList().get(0).getDoubleFX();
-        Double firstY = fewSizeItem.getPathList().get(0).getDoubleFY();
-        String firstName = fewSizeItem.getPathList().get(0).getFName();
-
-        walkPathReqDto = WalkPathReqDto.createBuilder()
-                .startX(beginX)
-                .startY(beginY)
-                .startName(beginName)
-                .endX(firstX)
-                .endY(firstY)
-                .endName(firstName)
-                .build();
-
-        walkPathResDto = getWalkPath(walkPathReqDto);
-        List<Point> points = new ArrayList<>(getAllPoints(walkPathResDto));
+        List<Point> points = new ArrayList<>(getFirstPoints(pathReqDto, fewSizeItem));
 
         //첫 버스 타고
         points.add(fewSizeItem.getPathList().get(0).getStart());
@@ -63,22 +47,8 @@ public class PathService {
 
         int callSize = fewSizeItem.getSize() - 1;
         for (int i = 0; i < callSize; i++) {
-            Double startX = fewSizeItem.getPathList().get(i).getDoubleTX();
-            Double startY = fewSizeItem.getPathList().get(i).getDoubleTY();
-            String startName = fewSizeItem.getPathList().get(i).getTName();
 
-            Double endX = fewSizeItem.getPathList().get(i + 1).getDoubleFX();
-            Double endY = fewSizeItem.getPathList().get(i + 1).getDoubleFY();
-            String endName = fewSizeItem.getPathList().get(i + 1).getFName();
-
-            walkPathReqDto = WalkPathReqDto.createBuilder()
-                    .startX(startX)
-                    .startY(startY)
-                    .startName(startName)
-                    .endX(endX)
-                    .endY(endY)
-                    .endName(endName)
-                    .build();
+            walkPathReqDto = getMidleWalkPathReqDto(pathReqDto, fewSizeItem, i);
 
             //버스 내리고
             points.add(fewSizeItem.getPathList().get(i).getEnd());
@@ -96,18 +66,47 @@ public class PathService {
 
         }
 
-        Double beforeX = fewSizeItem.getPathList().get(callSize).getDoubleTX();
-        Double beforeY = fewSizeItem.getPathList().get(callSize).getDoubleTY();
-        String beforeName = fewSizeItem.getPathList().get(callSize).getTName();
-
         //마지막 버스 내리고
         points.add(fewSizeItem.getPathList().get(callSize).getEnd());
 
-        Double finalX = Double.valueOf(pathReqDto.getEndX());
-        Double finalY = Double.valueOf(pathReqDto.getEndY());
+        points.addAll(getLastPoints(pathReqDto, fewSizeItem, callSize));
+
+        return new PathDetailResDto(fewSizeItem.getTime(), points);
+    }
+
+    private List<Point> getFirstPoints(PathReqDto pathReqDto, BusItem fewSizeItem) {
+        String beginX = pathReqDto.getStartX();
+        String beginY = pathReqDto.getStartY();
+        String beginName = "출발지";
+
+        String firstX = fewSizeItem.getPathList().get(0).getFx();
+        String firstY = fewSizeItem.getPathList().get(0).getFy();
+        String firstName = fewSizeItem.getPathList().get(0).getFName();
+
+        WalkPathReqDto walkPathReqDto = WalkPathReqDto.createBuilder()
+                .startX(beginX)
+                .startY(beginY)
+                .startName(beginName)
+                .endX(firstX)
+                .endY(firstY)
+                .endName(firstName)
+                .build();
+
+        WalkPathResDto walkPathResDto = getWalkPath(walkPathReqDto);
+        return new ArrayList<>(getAllPoints(walkPathResDto));
+    }
+
+    private List<Point> getLastPoints(PathReqDto pathReqDto, BusItem fewSizeItem, int callSize) {
+
+        String beforeX = fewSizeItem.getPathList().get(callSize).getFx();
+        String beforeY = fewSizeItem.getPathList().get(callSize).getFy();
+        String beforeName = fewSizeItem.getPathList().get(callSize).getTName();
+
+        String finalX = pathReqDto.getEndX();
+        String finalY = pathReqDto.getEndY();
         String finalName = "도착지";
 
-        walkPathReqDto = WalkPathReqDto.createBuilder()
+        WalkPathReqDto walkPathReqDto = WalkPathReqDto.createBuilder()
                 .startX(beforeX)
                 .startY(beforeY)
                 .startName(beforeName)
@@ -116,31 +115,49 @@ public class PathService {
                 .endName(finalName)
                 .build();
 
-        walkPathResDto = getWalkPath(walkPathReqDto);
-        points.addAll(getAllPoints(walkPathResDto));
 
-        return points;
+        WalkPathResDto walkPathResDto = getWalkPath(walkPathReqDto);
+        return new ArrayList<>(getAllPoints(walkPathResDto));
     }
 
-    public BusItem getShortestDistanceItem(BusStopResDto resDto) {
+    private WalkPathReqDto getMidleWalkPathReqDto(PathReqDto pathReqDto, BusItem fewSizeItem, int index) {
+        String startX = fewSizeItem.getPathList().get(index).getTx();
+        String startY = fewSizeItem.getPathList().get(index).getTy();
+        String startName = fewSizeItem.getPathList().get(index).getTName();
+
+        String endX = fewSizeItem.getPathList().get(index + 1).getFx();
+        String endY = fewSizeItem.getPathList().get(index + 1).getFy();
+        String endName = fewSizeItem.getPathList().get(index + 1).getFName();
+
+        return WalkPathReqDto.createBuilder()
+                .startX(startX)
+                .startY(startY)
+                .startName(startName)
+                .endX(endX)
+                .endY(endY)
+                .endName(endName)
+                .build();
+    }
+
+    public BusItem getShortestDistanceItem(BusStationResDto resDto) {
         DistanceComparator comparator = new DistanceComparator();
         return resDto.getItemList().stream()
                 .min(comparator)
                 .orElseThrow(() -> new RuntimeException("경로 없음"));
     }
 
-    public BusItem getFewSizeItem(BusStopResDto resDto) {
+    public BusItem getFewSizeItem(BusStationResDto resDto) {
         SizeComparator comparator = new SizeComparator();
         return resDto.getItemList().stream()
                 .min(comparator)
                 .orElseThrow(() -> new RuntimeException("경로없음"));
     }
 
-    public BusStopResDto getBusPath(PathReqDto pathReqDto) {
+    public BusStationResDto getBusPath(PathReqDto pathReqDto) {
         RestTemplate restTemplate = restTemplateConfig.getRestTemplate();
         URI url = restInfo.getBusPathURI(pathReqDto);
 
-        return restTemplate.getForObject(url, BusStopResDto.class);
+        return restTemplate.getForObject(url, BusStationResDto.class);
     }
 
     public WalkPathResDto getWalkPath(WalkPathReqDto reqDto) {
@@ -149,9 +166,10 @@ public class PathService {
         URI url = restInfo.getWalkPathURI(reqDto);
 
         HttpEntity httpEntity = new HttpEntity<>(reqDto, headers);
-
-        return restTemplate.exchange(url, HttpMethod.POST, httpEntity, WalkPathResDto.class)
+        WalkPathResDto walkPathResDto = restTemplate.exchange(url, HttpMethod.POST, httpEntity, WalkPathResDto.class)
                 .getBody();
+        System.out.println(walkPathResDto.toString());
+        return walkPathResDto;
     }
 
     public List<Point> getAllPoints(WalkPathResDto resDto) {

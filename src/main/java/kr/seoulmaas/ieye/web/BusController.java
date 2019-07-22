@@ -43,8 +43,9 @@ public class BusController {
 
     @PostMapping("/remain")
     public ResponseEntity<BusRemainInfoResDto> getRemainBus(@RequestBody BusRemainInfoReqDto reqDto) {
-
-        return ResponseEntity.ok(new BusRemainInfoResDto());
+        BusRemainInfoResDto busRemainInfoResDto = busService.getRemainInfo(reqDto);
+        System.out.println(busRemainInfoResDto);
+        return ResponseEntity.ok(busRemainInfoResDto);
     }
 
 }

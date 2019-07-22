@@ -15,8 +15,8 @@ import org.springframework.lang.Nullable;
 public class Point {
 
     private Type type = Type.LINE;
-    private Double x;
-    private Double y;
+    private String x;
+    private String y;
     private String turnType;
 
     @Nullable
@@ -26,8 +26,8 @@ public class Point {
     private String routeId;
 
     public Point(JsonNode coordinate) {
-        this.x = coordinate.get(0).doubleValue();
-        this.y = coordinate.get(1).doubleValue();
+        this.x = coordinate.get(0).toString();
+        this.y = coordinate.get(1).toString();
     }
 
     public Point(JsonNode coordinate, String type, int turnType) {
@@ -35,14 +35,14 @@ public class Point {
             this.type = Type.POINT;
             this.turnType = Turn.findTurnTypeByNo(turnType);
         }
-        this.x = coordinate.get(0).doubleValue();
-        this.y = coordinate.get(1).doubleValue();
+        this.x = coordinate.get(0).toString();
+        this.y = coordinate.get(1).toString();
     }
 
 
     public Point(String x, String y, Type busStop, String busNumber, String routeId, String fid, String tid) {
-        this.x = Double.parseDouble(x);
-        this.y = Double.parseDouble(y);
+        this.x = x;
+        this.y = y;
         this.type = busStop;
         if (busNumber != null) {
             this.busNumber = busNumber;

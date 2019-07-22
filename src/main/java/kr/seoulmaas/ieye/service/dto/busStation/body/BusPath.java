@@ -1,4 +1,4 @@
-package kr.seoulmaas.ieye.service.dto.busStop.body;
+package kr.seoulmaas.ieye.service.dto.busStation.body;
 
 import kr.seoulmaas.ieye.service.dto.path.walk.Point;
 import kr.seoulmaas.ieye.service.dto.path.walk.Type;

@@ -2,8 +2,9 @@ package kr.seoulmaas.ieye.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import kr.seoulmaas.ieye.service.dto.busStop.BusStopResDto;
-import kr.seoulmaas.ieye.service.dto.busStop.body.BusItem;
+import kr.seoulmaas.ieye.service.dto.busStation.BusStationResDto;
+import kr.seoulmaas.ieye.service.dto.busStation.body.BusItem;
+import kr.seoulmaas.ieye.service.dto.path.PathDetailResDto;
 import kr.seoulmaas.ieye.service.dto.path.PathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathReqDto;
 import kr.seoulmaas.ieye.service.dto.path.WalkPathResDto;
@@ -16,7 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -46,11 +46,10 @@ public class PathServiceTest {
         PathReqDto pathReqDto = getTestPathReqDto("127.08370508148472", "37.52946809068537", "127.09404734529575", "37.50612432766213");
 
         //when
-        List<Point> points = pathService.getPath(pathReqDto);
-        ResponseEntity<List<Point>> responseEntity = ResponseEntity.ok(points);
+        PathDetailResDto resDto = pathService.getPath(pathReqDto);
 
         //then
-        System.out.println(gson.toJson(responseEntity));
+        System.out.println(gson.toJson(resDto));
     }
 
     @Test
@@ -59,7 +58,7 @@ public class PathServiceTest {
         PathReqDto pathReqDto = getTestPathReqDto("127.08370508148472", "37.52946809068537", "127.09404734529575", "37.50612432766213");
 
         //when
-        BusStopResDto response = pathService.getBusPath(pathReqDto);
+        BusStationResDto response = pathService.getBusPath(pathReqDto);
 
         //then
         assertThat(response.getItemList()).isNotNull();
@@ -73,8 +72,8 @@ public class PathServiceTest {
         PathReqDto pathReqDto = getTestPathReqDto("127.08370508148472", "37.52946809068537", "127.09404734529575", "37.50612432766213");
 
         //when
-        BusStopResDto busStopResDto = pathService.getBusPath(pathReqDto);
-        BusItem busItem = pathService.getShortestDistanceItem(busStopResDto);
+        BusStationResDto busStationResDto = pathService.getBusPath(pathReqDto);
+        BusItem busItem = pathService.getShortestDistanceItem(busStationResDto);
 
         //then
         assertThat(busItem).isNotNull();
@@ -87,8 +86,8 @@ public class PathServiceTest {
         PathReqDto pathReqDto = getTestPathReqDto("127.08370508148472", "37.52946809068537", "127.09404734529575", "37.50612432766213");
 
         //when
-        BusStopResDto busStopResDto = pathService.getBusPath(pathReqDto);
-        BusItem busItem = pathService.getFewSizeItem(busStopResDto);
+        BusStationResDto busStationResDto = pathService.getBusPath(pathReqDto);
+        BusItem busItem = pathService.getFewSizeItem(busStationResDto);
 
         //then
         assertThat(busItem).isNotNull();

@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class RestTemplateConfig {
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     public RestTemplateConfig() {
         final int TIME_OUT = 50000;
