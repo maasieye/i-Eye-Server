@@ -31,7 +31,7 @@ public class PathService {
     private final RestTemplateConfig restTemplateConfig;
     private final RestInfo restInfo;
 
-    //TODO 버스 경로 없이 걷는 경로만 나올때 에러 터지지않고 걷는 경로만 주도록
+
     public PathDetailResDto getPath(PathReqDto pathReqDto) {
         BusStationResDto busStationResDto = getBusPath(pathReqDto);
         BusItem fewSizeItem = getFewSizeItem(busStationResDto);
